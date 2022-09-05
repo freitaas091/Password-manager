@@ -61,6 +61,14 @@ class Pass_Manager():
 
         self.master_key = ""
 
+        self.reset_warning_msg = """*********************************************************************
+                                  \r* Você digitou a super senha incorretamente. Por isso o processo    *
+                                  \r* não pôde ser concluído.                                           * 
+                                  \r* -> Caso tenha perdido a super senha por algum motivo, nada nesse  *  
+                                  \r* programa poderá ser acessado. Logo, é recomendado que você reins- *
+                                  \r* tale o programa, reiniciando seus dados no processo.              *
+                                  \r*********************************************************************\n"""
+
         self.back_to_start_page_msg = """***************************************************
                                        \r*        Voltando a tela inicial.                 *
                                        \r***************************************************\n"""
@@ -74,13 +82,15 @@ class Pass_Manager():
                                \r* grama serão reiniciados com a redefinição.                *
                                \r************************************************************\n"""
 
-        self.change_master_key_msg = """**************************************************************
-                                      \r* -> Tem certeza que deseja mudar sua super senha?(Sim,Não)  *
-                                      \r* Observações:                                               * 
-                                      \r* -> Para muda-la, será necessária a antiga super senha.     *  
-                                      \r* -> Todas as configurações e senhas salvas nesse programa   *
-                                      \r* serão perdidas no processo.                                *
-                                      \r*                                                            *
+        self.change_master_key_msg = """***************************************************************
+                                      \r* Observações para mudança de super senha:                    * 
+                                      \r* -> Para muda-la, será necessária a antiga super senha.      *  
+                                      \r* -> Todas as configurações e senhas salvas nesse programa    *
+                                      \r* permanecerão intactas no final do processo.                 *
+                                      \r* -> Caso não se lembre da senha, tente continuar o processo  *
+                                      \r* e considere realizar o procedimento descrito ao final dele. *
+                                      \r*                                                             *
+                                      \r* -> Tem certeza que deseja mudar sua super senha? (Sim,Não)  *
                                       \r**************************************************************\n"""
 
         self.start_message = """***************************************
@@ -251,7 +261,7 @@ class Pass_Manager():
             if answer == "Sim" or answer == "S" or answer == "sim" or answer == "s":
                 
                 if not self.demand_master_key():
-                    input( "Super senha incorreta, não foi possível muda-la.")
+                    input( self.reset_warning_msg )
                     break
 
                 while True:
@@ -259,13 +269,9 @@ class Pass_Manager():
 
                     if self.check_if_valid(master_key):
                         self.master_key = self.password_encrypt( master_key )
+                        self.save_master_key_in_file()
 
-                        self.clear_the_file(self.passwords_file)
-                        self.passwords = dict()
-
-                        self.clear_the_file(self.master_password_file)
-
-                        input("Super senha redefinida com sucesso, e dados do programa foram reiniciados.")
+                        input("Super senha redefinida com sucesso, e dados do programa permaneceram intactos.")
 
                         break
                 break
